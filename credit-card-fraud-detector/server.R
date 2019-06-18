@@ -20,15 +20,21 @@ ReadAllData <- function() { # A function that calculates the underlying value
 
 shinyServer(server <- function(input, output, session) {
   values <- reactiveValues()
-  ## read the files in 5 second difference
-  sampled_data <- reactivePoll(3000, session, IsThereNewFile, ReadAllData)
-  real_data <- reactive({
-    rbind(data, sampled_data())
-  })
+ observe({
+   isolate({
+     sampled_data <- reactivePoll(3000, session, IsThereNewFile, ReadAllData)
+       values$data <- rbind(values$data, sampled_data())
+   })
+
+ })
+  ## read the files in 3 second difference
+
+
 
   observe({
-    print(real_data())
-  })
+    
+    print(values$data)
+  }) 
   source("server/01-dashboard-srv.R", local = TRUE)
   source("server/02-alert-srv.R", local = TRUE)
 })
