@@ -1,5 +1,5 @@
 output$transaction_box <- renderInfoBox({
-  real_data <- real_data()
+  real_data <- sampled_data()
   infoBox(
     "Transaction",
     paste0(count({real_data})), 
@@ -10,7 +10,7 @@ output$transaction_box <- renderInfoBox({
 
 
 output$amount_box <- renderInfoBox({
-  real_data <- real_data()
+  real_data <- sampled_data() %>% na.omit()
   infoBox(
     "Amount",
     paste0(sum(real_data$Amount)), 
@@ -19,15 +19,17 @@ output$amount_box <- renderInfoBox({
   )
 })
 output$alert_box <- renderInfoBox({
+  real_data <- predict_fraud()%>%group_by(predict) %>% tally(name = "count") %>% filter(predict == 1)
   infoBox(
-    "Alerts","67",
+    "Alerts",paste0(real_data$count),
     icon = icon("bell", lib = "glyphicon"),
     color = "red", fill = TRUE
   )
 })
 
 output$plot1 <- renderHighchart({
-  hchart(sample %>% group_by(Time_hr) %>% tally(), "column", hcaes(x = Time_hr, y = n), name = "No of Transaction") %>% 
+
+  hchart(sampled_data() %>% group_by(Time_hr) %>% tally(), "column", hcaes(x = Time_hr, y = n), name = "No of Transaction") %>% 
     hc_yAxis(title = list(text = "No of Transaction")) %>%
     hc_xAxis(title = list(text = "Time in Hours")) %>%
     hc_title(
@@ -38,7 +40,7 @@ output$plot1 <- renderHighchart({
 
 output$plot2 <- renderHighchart({
   hchart(
-    sample %>% group_by(Time_hr) %>% summarise(Total = sum(Amount)), "column", hcaes(x = Time_hr, y = Total),
+    sampled_data() %>% group_by(Time_hr) %>% summarise(Total = sum(Amount)), "column", hcaes(x = Time_hr, y = Total),
     color = "#85bb65", name = "Amount $") %>%
     hc_yAxis(title = list(text = "Amount of Transaction")) %>%
     hc_xAxis(title = list(text = "Time in Hours")) %>%

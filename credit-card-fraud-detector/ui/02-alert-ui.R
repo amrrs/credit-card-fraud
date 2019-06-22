@@ -10,8 +10,22 @@ tabItem(
         infoBoxOutput("a_fraud_box",width = 3),
         infoBoxOutput("a_genuine_box",width = 3)
         
-      )
+      ),
+      fluidRow(
+        box(
+          DTOutput(
+            "datatable",
+            height = 500
+          )
+        ),
+        box(
+          DTOutput(
+            "limeplot",
+            height = 500
+          )
+        )
         )
       )
     )
+)
   
