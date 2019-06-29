@@ -1,5 +1,5 @@
 ## Render the infobox
-output$a_transaction_box <- renderInfoBox({
+output$rf_transaction_box <- renderInfoBox({
   infoBox(
     "Transaction",
     paste0(count(sampled_data())),
@@ -10,7 +10,7 @@ output$a_transaction_box <- renderInfoBox({
 })
 
 
-output$a_amount_box <- renderInfoBox({
+output$rf_amount_box <- renderInfoBox({
   real_data <- sampled_data() %>% na.omit()
   infoBox(
     "Amount",
@@ -20,9 +20,9 @@ output$a_amount_box <- renderInfoBox({
     fill = TRUE
   )
 })
-output$a_fraud_box <- renderInfoBox({
+output$rf_fraud_box <- renderInfoBox({
   real_data <-
-    predict_fraud() %>% group_by(predict) %>% tally(name = "count") %>% filter(predict == 1)
+    predict_fraudrf() %>% group_by(predict) %>% tally(name = "count") %>% filter(predict == 1)
   infoBox(
     "Alerts",
     paste0(real_data$count),
@@ -33,9 +33,9 @@ output$a_fraud_box <- renderInfoBox({
 })
 
 
-output$a_genuine_box <- renderInfoBox({
+output$rf_genuine_box <- renderInfoBox({
   real_data <-
-    predict_fraud() %>% group_by(predict) %>% tally(name = "count") %>% filter(predict == 0)
+    predict_fraudrf() %>% group_by(predict) %>% tally(name = "count") %>% filter(predict == 0)
   infoBox(
     "Genuine",
     paste0(real_data$count),
@@ -46,9 +46,9 @@ output$a_genuine_box <- renderInfoBox({
 })
 
 ## Render the fraud transaction table
-output$datatable <- renderDataTable({
+output$rf_datatable <- renderDataTable({
   data <-
-    predict_fraud() %>% group_by(predict) %>% filter(predict == 1)
+    predict_fraudrf() %>% group_by(predict) %>% filter(predict == 1)
   fwrite(data, "fraud_transaction.csv", row.names = FALSE)
   DT::datatable(data,
                 selection = "single",
@@ -56,15 +56,15 @@ output$datatable <- renderDataTable({
 })
 
 ## render the lime plots
-output$limeplot <- renderPlot({
+output$rf_limeplot <- renderPlot({
   #  input$run_model                                 # button input
   validate(
-    need(input$in1, 'Click on a Row from the Table'))
+    need(input$datatable_rows_selected, 'Click on a Row from the Table'))
   index <- input$datatable_rows_selected
   #  index <- isolate(input$datatable_rows_selected)             # use isolate to run model only on button press
   data <-
-    predict_fraud() %>% group_by(predict) %>% filter(predict == 1)
-  #plot(data$V1,data$V5)
+    predict_fraudrf() %>% group_by(predict) %>% filter(predict == 1)
+  #  plot(data$V1,data$V5)
   #  plot(iris$Sepal.Length,iris$Petal.Width)
   plot_features(explain(
     data[index, 1:32],
