@@ -32,3 +32,7 @@ Technology or tools used:
   - Data
 
 
+### UI of The App
+![](/img/img1.png)
+![](/img/img2.png)
+![](/img/img4.png)
