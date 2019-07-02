@@ -25,7 +25,10 @@ output$amount_box <- renderInfoBox({
 })
 output$alert_box <- renderInfoBox({
   real_data <-
-    predict_fraud() %>% group_by(predict) %>% tally(name = "count") %>% filter(predict == 1)
+    predict_fraudxg() %>%
+    group_by(predict) %>%
+    tally(name = "count") %>%
+    filter(predict == 1)
   infoBox(
     "Alerts",
     paste0(real_data$count),
@@ -34,6 +37,7 @@ output$alert_box <- renderInfoBox({
     fill = TRUE
   )
 })
+
 
 ## Render the plots
 output$plot1 <- renderHighchart({

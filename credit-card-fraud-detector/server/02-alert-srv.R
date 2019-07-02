@@ -61,7 +61,7 @@ output$limeplot <- renderPlot({
   validate(
     need(input$in1, 'Click on a Row from the Table'))
   index <- input$datatable_rows_selected
-  #  index <- isolate(input$datatable_rows_selected)             # use isolate to run model only on button press
+  #  index <- isolate(input$datatable_rows_selected)          
   data <-
     predict_fraud() %>% group_by(predict) %>% filter(predict == 1)
   #plot(data$V1,data$V5)
@@ -70,6 +70,6 @@ output$limeplot <- renderPlot({
     data[index, 1:32],
     explainer,
     n_labels = 1,
-    n_features = 5
+    n_features = 10
   )) + ggtitle("Model Explanation")
 })

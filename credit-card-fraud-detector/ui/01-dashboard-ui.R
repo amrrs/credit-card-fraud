@@ -9,9 +9,9 @@ tabItem(tabName = "dashboard"
             infoBoxOutput("alert_box")
           ),
           fluidRow(
-            box(highchartOutput("plot1",
+            box(collapsible = TRUE,highchartOutput("plot1",
                                 height = 500) %>% withSpinner()),
-            box(highchartOutput("plot2",
+            box(collapsible = TRUE,highchartOutput("plot2",
                                 height = 500) %>% withSpinner())
           )
         )))

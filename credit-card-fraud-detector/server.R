@@ -25,52 +25,52 @@ ReadData <- function(file) {
 shinyServer(server <- function(input, output, session) {
   #  values <- reactiveValues()
   #  values$data <-  read_csv("/home/diwash/projeckt/credit_card_feaud/credit-card-fraud-detector/data/data.csv")
-  
+
   ## read the files in 3 second difference
   # sampled_data <- reactivePoll(1000, session, IsThereNewFile, ReadAllData)
   sampled_data <-
-    reactiveFileReader(20000, session, "stream.csv", ReadData)
-  
+    reactiveFileReader(15000, session, "stream.csv", ReadData)
+
   predict_fraud <- reactive({
     data <- sampled_data() %>% select(-Time_hr)
     h2odata <- as.h2o(data)
-    #h2o.predict(demo_model,h2oData) %>% as.data.table()
+    # h2o.predict(demo_model,h2oData) %>% as.data.table()
     prediction <-
       bind_cols(data, h2o.predict(model, h2odata) %>% as.data.frame())
     return(prediction)
   })
-  
+
   predict_fraudrf <- reactive({
-    data <- sampled_data() %>% select(-Time_hr)
+    data <- sampled_data()
     h2odata <- as.h2o(data)
-    #h2o.predict(demo_model,h2oData) %>% as.data.table()
+    # h2o.predict(demo_model,h2oData) %>% as.data.table()
     prediction <-
       bind_cols(data, h2o.predict(modelrf, h2odata) %>% as.data.frame())
     return(prediction)
   })
-  
+
   predict_fraudxg <- reactive({
-    data <- sampled_data() %>% select(-Time_hr)
+    data <- sampled_data()
     h2odata <- as.h2o(data)
-    #h2o.predict(demo_model,h2oData) %>% as.data.table()
+    # h2o.predict(demo_model,h2oData) %>% as.data.table()
     prediction <-
       bind_cols(data, h2o.predict(modelxg, h2odata) %>% as.data.frame())
     return(prediction)
   })
-  
+
   predict_fraudgb <- reactive({
-    data <- sampled_data() %>% select(-Time_hr)
+    data <- sampled_data()
     h2odata <- as.h2o(data)
-    #h2o.predict(demo_model,h2oData) %>% as.data.table()
+    # h2o.predict(demo_model,h2oData) %>% as.data.table()
     prediction <-
       bind_cols(data, h2o.predict(modelgb, h2odata) %>% as.data.frame())
     return(prediction)
   })
   #  real_data <- reactivePoll(3000, session, ReadData)
-  
+
   source("server/01-dashboard-srv.R", local = TRUE)
   source("server/02-alert-srv.R", local = TRUE)
-  source("server/02-rfalert-srv.R", local = TRUE)
   source("server/02-xgalert-srv.R", local = TRUE)
-  source("server/02-gbmalert-srv.R", local = TRUE)  
+  source("server/02-gbmalert-srv.R", local = TRUE)
+  source("server/02-rfalert-srv.R", local = TRUE)
 })
